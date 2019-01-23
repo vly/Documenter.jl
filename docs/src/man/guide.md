@@ -102,15 +102,12 @@ $ julia --color=yes make.jl
 When you run that you should see the following output
 
 ```
-Documenter: setting up build directory.
-Documenter: expanding markdown templates.
-Documenter: building cross-references.
-Documenter: running document checks.
- > checking for missing docstrings.
- > running doctests.
- > checking footnote links.
-Documenter: populating indices.
-Documenter: rendering document.
+[ Info: SetupBuildDirectory: setting up build directory.
+[ Info: ExpandTemplates: expanding markdown templates.
+[ Info: CrossReferences: building cross-references.
+[ Info: CheckDocument: running document checks.
+[ Info: Populate: populating indices.
+[ Info: RenderDocument: rendering document.
 ```
 
 The `docs/` folder should contain a new directory -- called `build/`. It's structure should
@@ -124,7 +121,8 @@ build/
         documenter.js
         search.js
     index.html
-    search/index.html
+    search/
+        index.html
     search_index.js
 ```
 
