@@ -127,7 +127,10 @@ function render(doc::Documents.Document, settings::LaTeX=LaTeX())
 
             # compile .tex and copy over the .pdf file if compile_tex return true
             status = compile_tex(doc, settings, texfile)
-            status && cp(pdffile, joinpath(doc.user.root, doc.user.build, pdffile); force = true)
+            if !status
+                error("LaTeXWriter: failed to compile tex.")
+            end
+            cp(pdffile, joinpath(doc.user.root, doc.user.build, pdffile); force = true)
         end
     end
 end
