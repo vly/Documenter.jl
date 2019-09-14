@@ -639,18 +639,18 @@ function git_push(
                 end
 
                 # Add, commit, and push the docs to the remote.
-                run(`git add -A .`)
-                if !success(`git diff --cached --exit-code`)
-                    if forcepush
-                        run(`git commit --amend --date=now -m "build based on $sha"`)
-                        run(`git push -fq upstream HEAD:$branch`)
-                    else
-                        run(`git commit -m "build based on $sha"`)
-                        run(`git push -q upstream HEAD:$branch`)
-                    end
-                else
-                    @debug "new docs identical to the old -- not committing nor pushing."
-                end
+                # run(`git add -A .`)
+                # if !success(`git diff --cached --exit-code`)
+                #     if forcepush
+                #         run(`git commit --amend --date=now -m "build based on $sha"`)
+                #         run(`git push -fq upstream HEAD:$branch`)
+                #     else
+                #         run(`git commit -m "build based on $sha"`)
+                #         run(`git push -q upstream HEAD:$branch`)
+                #     end
+                # else
+                #     @debug "new docs identical to the old -- not committing nor pushing."
+                # end
             end
         end
     finally
