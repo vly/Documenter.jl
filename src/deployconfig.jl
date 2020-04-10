@@ -324,7 +324,7 @@ function post_status(::GitHubActions; type, repo::String, subfolder=nothing, kwa
         # In particular this is only called after we have
         # determined to deploy.
         sha = nothing
-        @info "in post_status" get(ENV, "GITHUB_EVENT_NAME", nothing) get(ENV, "GITHUB_EVENT_NAME", nothing)
+        @info "in post_status" get(ENV, "GITHUB_EVENT_NAME", nothing)
         if get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
             @info "in pull_request" get(ENV, "GITHUB_EVENT_PATH", nothing)
             event_path = get(ENV, "GITHUB_EVENT_PATH", nothing)
