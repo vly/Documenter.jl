@@ -324,19 +324,23 @@ function post_status(::GitHubActions; type, repo::String, subfolder=nothing, kwa
         # In particular this is only called after we have
         # determined to deploy.
         sha = nothing
+        @info "in post_status" get(ENV, "GITHUB_EVENT_NAME", nothing) get(ENV, "GITHUB_EVENT_NAME", nothing)
         if get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+            @info "in pull_request" get(ENV, "GITHUB_EVENT_PATH", nothing)
             event_path = get(ENV, "GITHUB_EVENT_PATH", nothing)
-            event_path === nothing && return
+            event_path === nothing && (@info "event_path is nothing, returning"; return)
             event = JSON.parsefile(event_path)
+            @info "eventfile" event
             if haskey(event, "pull_request") &&
                haskey(event["pull_request"], "head") &&
                haskey(event["pull_request"]["head"], "sha")
                sha = event["pull_request"]["head"]["sha"]
             end
         elseif get(ENV, "GITHUB_EVENT_NAME", nothing) == "push"
+            @info "in push" get(ENV, "GITHUB_SHA", nothing)
             sha = get(ENV, "GITHUB_SHA", nothing)
         end
-        sha === nothing && return
+        sha === nothing && (@info "sha is nothing, returning"; return)
         return post_github_status(type, repo, sha, subfolder)
     catch
         @debug "Failed to post status"
@@ -345,15 +349,18 @@ end
 
 function post_github_status(type::S, deploydocs_repo::S, sha::S, subfolder=nothing) where S <: String
     try
+        @info "in post_github_status" Sys.which("curl")
         Sys.which("curl") === nothing && return
         ## Extract owner and repository name
         m = match(r"^github.com\/(.+?)\/(.+?\.jl)(.git)?$", deploydocs_repo)
+        @info "regex match" m
         m === nothing && return
         owner = String(m.captures[1])
         repo = String(m.captures[2])
 
         ## Need an access token for this
         auth = get(ENV, "GITHUB_TOKEN", nothing)
+        @info "authentication" auth
         auth === nothing && return
         # construct the curl call
         cmd = `curl -sX POST`
@@ -379,6 +386,7 @@ function post_github_status(type::S, deploydocs_repo::S, sha::S, subfolder=nothi
         push!(cmd.exec, "https://api.github.com/repos/$(owner)/$(repo)/statuses/$(sha)")
         # Run the command (silently)
         io = IOBuffer()
+        @info "executing cmd" cmd
         res = run(pipeline(cmd; stdout=io, stderr=devnull))
         @debug "Response of curl POST request" response=String(take!(io))
     catch
